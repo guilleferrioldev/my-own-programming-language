@@ -1,0 +1,58 @@
+statements              : NEWLINE* expression (NEWLINE+ expression)*
+
+expression              : KEYWORD:var IDENTIFIER EQUAL expression
+                        : comparasion-expression ((KEYWORD:AND|KEYWORD:OR) comparasion-expression)*
+
+comparasion-expression  : NOT comparasion-expression
+                        : arithmetic-expression ((EE|LT|GT|LTE|GTE) arithmetic-expression)*
+
+arithmetic-expression   : term ((PLUS|MINUS) term)*
+
+term                    : factor ((MUL|DIV) factor)*
+
+factor                  : (PLUS|MINUS) factor
+                        : power
+
+power                   : atom (POW factor)*
+
+call                    : atom (LPAREN (expression (COMMA IDENTIFIER)*)? RPAREN)?
+
+atom                    : INT|FLOAT|STRINGS|IDENTIFIER
+                        : LPAREN expression RPAREN
+                        : list-expression
+                        : if-expression
+                        : for-expression
+                        : while-expression
+
+list-expression         : LSQUARE (expression (COMMA expression)*)? RSQUARE
+
+if-expression           : KEYWORD:IF expression KEYWORD:RETURN expression
+                          (expression if-expression-b|if-expression-c?)
+                        | (NEWLINE statements KEYWORD:END|if-expression-b|if-expression-c)
+
+if-expression-b         : KEYWORD:ELIF expression KEYWORD:RETURN expression
+                          (expression if-expression-b|if-expression-c?)
+                        |  (NEWLINE statements KEYWORD:END|if-expression-b|if-expression-c)
+
+if-expression-c         : KEYWORD:ELSE 
+                          expression 
+                        | (NEWLINE statements KEYWORD:END)
+
+for-expression          : KEYWORD:FOR IDENTIFIER EQ expression KEYWORD:TO expression
+                         (KEYWORD:STEP expression)? KEYWORD:RETURN expression 
+                    
+
+while-expression        : KEYWORD:WHILE expression KEYWORD:RETURN expression
+                          expression
+                        | (NEWLINE statements KEYWORD:END)
+
+func-definition         : KEYWORD:FN IDENTIFIER?
+                          LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+                          (ARROW expression)
+                        | (NEWLINE statements KEYWORD:END)
+
+                         
+
+
+
+
